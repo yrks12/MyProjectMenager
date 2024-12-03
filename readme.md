@@ -1,21 +1,3 @@
-app/
-├── __init__.py
-├── models.py
-├── routes.py
-├── templates/
-│   ├── base.html
-│   ├── index.html
-│   ├── project.html
-│   └── task.html
-├── static/
-│   ├── css/
-│   │   └── style.css
-│   └── js/
-│       └── script.js
-├── .env
-├── config.py
-├── requirements.txt
-└── README.md
 ```# MyProjectManager
 
 MyProjectManager is a web-based project management application built with Flask. It allows users to create, edit, and manage projects and tasks efficiently.
