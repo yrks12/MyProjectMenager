@@ -96,12 +96,17 @@ To deploy the application, you can use a platform like Heroku or any other cloud
    heroku config:set SECRET_KEY=your_secret_key
    ```
 
-4. Push your code to Heroku:
+4. Ensure Gunicorn is included in your requirements.txt:
+   ```bash
+   echo "gunicorn" >> requirements.txt
+   ```
+
+5. Push your code to Heroku:
    ```bash
    git push heroku main
    ```
 
-5. Open your app in the browser:
+6. Open your app in the browser:
    ```bash
    heroku open
    ```
