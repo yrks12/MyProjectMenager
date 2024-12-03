@@ -1,4 +1,4 @@
-```# MyProjectManager
+# MyProjectManager
 
 MyProjectManager is a web-based project management application built with Flask. It allows users to create, edit, and manage projects and tasks efficiently.
 
