@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="tasks-container">
+    <h2 class="page-title">Tasks for {{ project.name }}</h2>
+    <ul class="task-list">
+        {% for task in tasks %}
+        <li class="task-item">
+            <div class="task-details">
+                <span class="task-name">{{ task.name }}</span>
+                <span class="task-status {{ task.status|lower }}">{{ task.status }}</span>
+                <span class="task-priority {{ task.priority|lower }}">{{ task.priority }}</span>
+                <span class="task-type {{ task.task_type|lower }}">{{ task.task_type }}</span>
+            </div>
+            <div class="task-actions">
+                <form action="{{ url_for('task_routes.delete_task', task_id=task.id) }}" method="POST" class="delete-form">
+                    <button type="submit" class="delete-button">Delete</button>
+                </form>
+                <a href="/edit_task/{{ task.id }}" class="edit-button">Edit</a>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    <div class="action-buttons">
+        <a href="/create_task/{{ project.id }}" class="btn btn-primary">Create Task</a>
+        <a href="/" class="btn btn-secondary">Back to Projects</a>
+    </div>
+</div>
+{% endblock %}
+
