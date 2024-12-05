@@ -1,0 +1,206 @@
+/* Projects Container */
+.projects-container {
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.page-title {
+    font-size: 2em;
+    margin-bottom: 30px;
+    color: var(--text-primary);
+}
+
+/* Project List */
+.project-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 25px;
+}
+
+.project-item {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.project-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Project Header */
+.project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.project-name {
+    font-size: 1.4em;
+    color: var(--text-primary);
+}
+
+.project-status {
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.9em;
+    background: var(--secondary-bg);
+    color: var(--text-secondary);
+}
+
+/* Project Details */
+.project-details {
+    margin-bottom: 20px;
+}
+
+.project-details p {
+    margin: 5px 0;
+    color: var(--text-secondary);
+}
+
+/* Progress Bar */
+.progress-bar-container {
+    background: var(--secondary-bg);
+    border-radius: 10px;
+    height: 10px;
+    margin: 10px 0;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: var(--primary-color);
+    transition: width 0.3s ease;
+}
+
+/* Top Tasks Section */
+.top-tasks {
+    margin: 20px 0;
+}
+
+.task-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+.task-item {
+    background: var(--secondary-bg);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+/* Task Status and Priority Badges */
+.task-status,
+.task-priority,
+.task-type {
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.85em;
+}
+
+.task-status.completed { background: #28a745; color: white; }
+.task-status.in-progress { background: #ffc107; color: black; }
+.task-status.pending { background: #6c757d; color: white; }
+
+.task-priority.high { background: var(--high-priority-bg); color: var(--high-priority-text); }
+.task-priority.medium { background: var(--medium-priority-bg); color: var(--medium-priority-text); }
+.task-priority.low { background: var(--low-priority-bg); color: var(--low-priority-text); }
+
+.task-deadline {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+
+/* Project Actions */
+.project-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+}
+
+.btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-secondary {
+    background: var(--secondary-color);
+    color: white;
+}
+
+.delete-button {
+    background: var(--danger-color);
+    color: white;
+}
+
+.create-project-button {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 12px 24px;
+    background: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.create-project-button:hover {
+    background: var(--primary-color-dark);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .project-list {
+        grid-template-columns: 1fr;
+    }
+
+    .project-item {
+        margin-bottom: 20px;
+    }
+
+    .project-actions {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
+
+/* Add these variables to your root CSS */
+:root {
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --primary-color-dark: #0056b3;
+    --danger-color: #dc3545;
+} 

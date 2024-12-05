@@ -212,51 +212,38 @@ def delete_task(task_id):
     flash('Task deleted successfully!', 'success')
     return redirect(url_for('task_routes.tasks', project_id=task.project_id))
 
-@task_routes.route('/start_timer/<int:task_id>', methods=['POST'])
+@project_routes.route('/start_timer/<int:task_id>', methods=['POST'])
 @login_required
 def start_timer(task_id):
     task = Task.query.get_or_404(task_id)
-    if not task.timer_start:
-        task.timer_start = datetime.utcnow()
-        time_entry = TimeEntry(
-            task_id=task_id,
-            start_time=task.timer_start
-        )
-        db.session.add(time_entry)
-        db.session.commit()
-        app.logger.info(f'Timer started for task {task_id} at {task.timer_start}')
-        return jsonify({'status': 'success', 'message': 'Timer started'})
-    app.logger.warning(f'Timer already running for task {task_id}')
-    return jsonify({'status': 'error', 'message': 'Timer already running'})
+    if task.start_timer():
+        return jsonify({
+            'status': 'success',
+            'message': 'Timer started',
+            'timer_running': True,
+            'start_time': task.timer_start.isoformat()
+        })
+    return jsonify({'status': 'error', 'message': 'Timer already running'}), 400
 
-@task_routes.route('/stop_timer/<int:task_id>', methods=['POST'])
+@project_routes.route('/stop_timer/<int:task_id>', methods=['POST'])
 @login_required
 def stop_timer(task_id):
     task = Task.query.get_or_404(task_id)
-    app.logger.debug(f'Attempting to stop timer for task {task_id}. Current timer_start: {task.timer_start}')
-    if task.timer_start:
-        end_time = datetime.utcnow()
-        time_entry = TimeEntry.query.filter_by(
-            task_id=task_id, 
-            end_time=None
-        ).first()
-        
-        if time_entry:
-            time_entry.end_time = end_time
-            duration = int((end_time - time_entry.start_time).total_seconds())
-            time_entry.duration = duration
-            task.time_spent += duration
-            app.logger.info(f'Timer stopped for task {task_id}. Duration: {duration} seconds')
-
-        task.timer_start = None
-        db.session.commit()
-        return jsonify({'status': 'success', 'message': 'Timer stopped'})
-    app.logger.warning(f'No timer running for task {task_id}. Current timer_start: {task.timer_start}')
-    return jsonify({'status': 'error', 'message': 'No timer running'})
+    elapsed = task.stop_timer()
+    if elapsed:
+        return jsonify({
+            'status': 'success',
+            'message': 'Timer stopped',
+            'timer_running': False,
+            'elapsed_time': elapsed,
+            'formatted_time': task.get_formatted_time_spent()
+        })
+    return jsonify({'status': 'error', 'message': 'Timer not running'}), 400
 
 @task_routes.route('/add_manual_time/<int:task_id>', methods=['POST'])
 @login_required
 def add_manual_time(task_id):
+    """Add manual time entry to a task"""
     task = Task.query.get_or_404(task_id)
     hours = int(request.form.get('hours', 0))
     minutes = int(request.form.get('minutes', 0))
@@ -275,11 +262,85 @@ def add_manual_time(task_id):
         task.time_spent += duration
         db.session.add(time_entry)
         db.session.commit()
-        return jsonify({'status': 'success', 'message': 'Time added successfully'})
-    return jsonify({'status': 'error', 'message': 'Invalid time entry'})
+        return jsonify({
+            'status': 'success',
+            'message': 'Time added successfully',
+            'formattedTimeSpent': task.get_formatted_time_spent()
+        })
+    return jsonify({'status': 'error', 'message': 'Invalid time entry'}), 400
 
 # Use the decorator on routes that require login
 @project_routes.route('/some_protected_route')
 @login_required
 def some_protected_route():
     return render_template('protected.html')
+
+@project_routes.route('/dashboard')
+@login_required
+def dashboard():
+    # Get all tasks across all projects
+    tasks = Task.query.join(Project).all()
+    
+    # Calculate statistics
+    total_tasks = len(tasks)
+    completed_tasks = sum(1 for task in tasks if task.status == 'Completed')
+    total_hours = sum((task.time_spent or 0) for task in tasks) // 3600
+    
+    stats = {
+        'total_tasks': total_tasks,
+        'completed_tasks': completed_tasks,
+        'total_hours': total_hours
+    }
+    
+    # Group tasks by priority
+    tasks_by_priority = {
+        'High': [t for t in tasks if t.priority == 'High'][:5],
+        'Medium': [t for t in tasks if t.priority == 'Medium'][:5],
+        'Low': [t for t in tasks if t.priority == 'Low'][:5]
+    }
+    
+    # Pass the current date to the template (already a date object)
+    current_date = datetime.now().date()
+    
+    return render_template('dashboard.html', stats=stats, tasks_by_priority=tasks_by_priority, now=current_date)
+
+@project_routes.route('/api/task/<int:task_id>/timer', methods=['POST'])
+@login_required
+def toggle_timer(task_id):
+    """API endpoint to start/stop task timer"""
+    task = Task.query.get_or_404(task_id)
+    action = request.json.get('action')
+    
+    try:
+        if action == 'start':
+            if task.start_timer():
+                return jsonify({
+                    'status': 'success',
+                    'message': 'Timer started',
+                    'isRunning': True,
+                    'startTime': task.timer_start.isoformat(),
+                    'formattedTimeSpent': task.get_formatted_time_spent()
+                })
+            return jsonify({'status': 'error', 'message': 'Timer already running'}), 400
+            
+        elif action == 'stop':
+            elapsed = task.stop_timer()
+            if elapsed:
+                return jsonify({
+                    'status': 'success',
+                    'message': 'Timer stopped',
+                    'isRunning': False,
+                    'formattedTimeSpent': task.get_formatted_time_spent(),
+                    'elapsedTime': elapsed
+                })
+            return jsonify({'status': 'error', 'message': 'Timer not running'}), 400
+            
+        else:
+            return jsonify({'status': 'error', 'message': 'Invalid action'}), 400
+            
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'status': 'error',
+            'message': f'Error processing timer: {str(e)}'
+        }), 500

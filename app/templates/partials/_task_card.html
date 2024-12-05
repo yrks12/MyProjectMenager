@@ -1,0 +1,31 @@
+<div class="card task-card" {% if draggable %}draggable="true" data-task-id="{{ task.id }}"{% endif %}>
+    <div class="card-header">
+        <h4>{{ task.name }}</h4>
+        {% if task.deadline %}
+            {% set deadline_status = task.get_deadline_status() %}
+            <div class="deadline-badge deadline-{{ deadline_status }}">
+                <i class="fas fa-calendar-alt"></i>
+                {% if deadline_status == 'overdue' %}
+                    <span class="deadline-text">
+                        Overdue by {{ (now - task.deadline).days }} days
+                        <br>
+                        <small>Due: {{ task.deadline.strftime('%Y-%m-%d') }}</small>
+                    </span>
+                {% else %}
+                    <span class="deadline-text">
+                        Due in {{ (task.deadline - now).days }} days
+                        <br>
+                        <small>Due: {{ task.deadline.strftime('%Y-%m-%d') }}</small>
+                    </span>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+    
+    <p>{{ task.description[:100] }}{% if task.description|length > 100 %}...{% endif %}</p>
+    
+    <div class="card-meta">
+        <span class="badge priority-{{ task.priority|lower }}">{{ task.priority }}</span>
+        <span class="badge status-{{ task.status|lower }}">{{ task.status }}</span>
+    </div>
+</div> 

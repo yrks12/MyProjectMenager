@@ -1,0 +1,20 @@
+<nav class="main-nav">
+    <div class="nav-brand">
+        <i class="fas fa-tasks"></i>
+        <span>Project Manager</span>
+    </div>
+    <ul class="nav-links">
+        <li><a href="{{ url_for('project_routes.dashboard') }}" class="{{ 'active' if request.endpoint == 'project_routes.dashboard' }}">
+            <i class="fas fa-chart-line"></i> Dashboard
+        </a></li>
+        <li><a href="{{ url_for('project_routes.index') }}" class="{{ 'active' if request.endpoint == 'project_routes.index' }}">
+            <i class="fas fa-project-diagram"></i> Projects
+        </a></li>
+        <li><a href="{{ url_for('project_routes.create_project') }}" class="{{ 'active' if request.endpoint == 'project_routes.create_project' }}">
+            <i class="fas fa-plus-circle"></i> Create Project
+        </a></li>
+        <li><a href="{{ url_for('project_routes.logout') }}" class="logout-link">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a></li>
+    </ul>
+</nav>

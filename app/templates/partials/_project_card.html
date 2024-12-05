@@ -1,0 +1,27 @@
+<div class="card project-card">
+    <h3>{{ project.name }}</h3>
+    <p>{{ project.description }}</p>
+    <div class="project-meta">
+        <div class="progress-bar">
+            <div class="progress" style="width: {{ project.progress }}%"></div>
+        </div>
+        <span class="progress-text">{{ project.progress|round|int }}% Complete</span>
+    </div>
+    {% if show_tasks %}
+    <div class="project-tasks">
+        <h4>Top Tasks</h4>
+        {% for task in project.top_tasks %}
+            {% include 'partials/_task_card.html' with context %}
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% if show_actions %}
+    <div class="project-actions">
+        <a href="{{ url_for('task_routes.project_tasks', project_id=project.id) }}" class="btn btn-primary">Tasks</a>
+        <a href="{{ url_for('project_routes.edit_project', project_id=project.id) }}" class="btn btn-secondary">Edit</a>
+        <form action="{{ url_for('project_routes.delete_project', project_id=project.id) }}" method="POST" class="inline-form">
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+        </form>
+    </div>
+    {% endif %}
+</div> 

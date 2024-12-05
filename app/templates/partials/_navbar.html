@@ -1,0 +1,16 @@
+<nav class="navbar">
+    <div class="nav-brand">
+        <a href="{{ url_for('project_routes.index') }}">Project Manager</a>
+    </div>
+    {% if 'username' in session %}
+    <div class="nav-links">
+        <a href="{{ url_for('project_routes.dashboard') }}" 
+           class="{{ 'active' if request.endpoint == 'project_routes.dashboard' }}">Dashboard</a>
+        <a href="{{ url_for('project_routes.index') }}"
+           class="{{ 'active' if request.endpoint == 'project_routes.index' }}">Projects</a>
+        <a href="{{ url_for('task_routes.kanban_board') }}"
+           class="{{ 'active' if request.endpoint == 'task_routes.kanban_board' }}">Kanban</a>
+        <a href="{{ url_for('project_routes.logout') }}">Logout</a>
+    </div>
+    {% endif %}
+</nav> 

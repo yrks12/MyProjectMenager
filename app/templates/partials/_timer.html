@@ -1,0 +1,31 @@
+<div class="timer-widget" data-task-id="{{ task.id }}">
+    <div class="timer-display" id="timer-{{ task.id }}">
+        <span class="timer-count">{{ task.get_total_time().hours }}:{{ task.get_total_time().minutes }}:00</span>
+    </div>
+    <div class="timer-controls">
+        <button class="btn btn-primary timer-btn" onclick="toggleTimer({{ task.id }})" data-task-id="{{ task.id }}">
+            {% if task.timer_start %}Stop{% else %}Start{% endif %}
+        </button>
+        <button class="btn btn-secondary" onclick="showManualTimeModal({{ task.id }})">
+            <i class="fas fa-clock"></i> Add Time
+        </button>
+    </div>
+</div>
+
+<!-- Manual Time Entry Modal -->
+<div id="manual-time-modal-{{ task.id }}" class="modal">
+    <div class="modal-content">
+        <h3>Add Time Manually</h3>
+        <form onsubmit="submitManualTime(event, {{ task.id }})">
+            <div class="form-group">
+                <label>Hours: <input type="number" name="hours" min="0" value="0"></label>
+                <label>Minutes: <input type="number" name="minutes" min="0" max="59" value="0"></label>
+            </div>
+            <div class="form-group">
+                <label>Notes: <textarea name="notes"></textarea></label>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-secondary" onclick="closeManualTimeModal({{ task.id }})">Cancel</button>
+        </form>
+    </div>
+</div> 

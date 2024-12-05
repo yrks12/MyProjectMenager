@@ -1,0 +1,311 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Dashboard Overview{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Stats Overview -->
+    <section class="dashboard-section stats-overview">
+        <div class="section-header">
+            <h2><i class="fas fa-chart-pie"></i> Overview</h2>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <i class="fas fa-tasks"></i>
+                    <h3>Total Tasks</h3>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-number">{{ stats.total_tasks }}</span>
+                    <span class="stat-label">Tasks</span>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>Completed</h3>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-number">{{ stats.completed_tasks }}</span>
+                    <span class="stat-label">Tasks</span>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <i class="fas fa-clock"></i>
+                    <h3>Time Tracked</h3>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-number">{{ stats.total_hours }}</span>
+                    <span class="stat-label">Hours</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tasks Grid -->
+    <div class="dashboard-grid">
+        <!-- Priority Tasks -->
+        <section class="dashboard-section priority-tasks">
+            <div class="section-header">
+                <h2><i class="fas fa-exclamation-circle"></i> Priority Tasks</h2>
+            </div>
+            
+            {% for priority, tasks in tasks_by_priority.items() %}
+            <div class="priority-group">
+                <h3 class="priority-header priority-{{ priority|lower }}">
+                    <i class="fas fa-flag"></i> {{ priority }} Priority
+                </h3>
+                <div class="task-list">
+                    {% for task in tasks %}
+                    <div class="task-card" id="task-{{ task.id }}">
+                        <h4>{{ task.name }}</h4>
+                        <p>{{ task.description }}</p>
+                        <div class="task-meta">
+                            <span class="badge priority-{{ task.priority|lower }}">{{ task.priority }}</span>
+                            <span class="badge status-{{ task.status|lower }}">{{ task.status }}</span>
+                        </div>
+                        <div class="time-tracking">
+                            <div class="timer-display" id="timer-{{ task.id }}">
+                                {% if task.timer_start %}
+                                    Running: <span class="timer-count" data-start-time="{{ task.timer_start.isoformat() }}">00:00:00</span>
+                                {% else %}
+                                    Total: <span class="timer-count">{{ (task.time_spent // 3600)|int }}:{{ ((task.time_spent % 3600) // 60)|int }}:{{ (task.time_spent % 60)|int }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="timer-controls">
+                                <button class="btn btn-primary timer-btn" 
+                                        onclick="toggleTimer({{ task.id }})"
+                                        data-task-id="{{ task.id }}"
+                                        data-timer-running="{{ 'true' if task.timer_start else 'false' }}">
+                                    {{ 'Stop' if task.timer_start else 'Start' }}
+                                </button>
+                                <button class="btn btn-secondary" 
+                                        onclick="showManualTimeModal({{ task.id }})">
+                                    Add Time
+                                </button>
+                            </div>
+                            <div class="time-history">
+                                <button class="btn btn-link" onclick="toggleTimeHistory({{ task.id }})">
+                                    Show Time History
+                                </button>
+                                <div id="time-history-{{ task.id }}" class="time-history-details" style="display: none;">
+                                    <h4>Time Entries</h4>
+                                    <table class="time-entries-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Duration</th>
+                                                <th>Type</th>
+                                                <th>Notes</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for entry in task.time_entries %}
+                                            <tr>
+                                                <td>{{ entry.start_time.strftime('%A, %B %d, %Y at %I:%M %p') }}</td>
+                                                <td>{{ (entry.duration // 3600)|int }}h {{ ((entry.duration % 3600) // 60)|int }}m</td>
+                                                <td>{{ 'Manual' if entry.manual_entry else 'Timer' }}</td>
+                                                <td>{{ entry.notes or '' }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </section>
+
+        <!-- Recent Activity -->
+        <section class="dashboard-section recent-activity">
+            <div class="section-header">
+                <h2><i class="fas fa-history"></i> Recent Activity</h2>
+            </div>
+            <div class="activity-timeline">
+                {% for activity in recent_activities %}
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas {{ activity.icon }}"></i>
+                    </div>
+                    <div class="activity-content">
+                        <span class="activity-time">{{ activity.timestamp.strftime('%H:%M') }}</span>
+                        <p>{{ activity.description }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- Manual Time Entry Modal -->
+<div id="manual-time-modal" class="modal">
+    <div class="modal-content">
+        <h3>Add Time Manually</h3>
+        <form id="manual-time-form">
+            <input type="number" name="hours" placeholder="Hours" min="0">
+            <input type="number" name="minutes" placeholder="Minutes" min="0" max="59">
+            <textarea name="notes" placeholder="Notes (optional)"></textarea>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Use the existing activeTimers object from script.js
+let activeTimers = {};
+
+function formatTime(seconds) {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${pad(h)}:${pad(m)}:${pad(s)}`;
+}
+
+function pad(num) {
+    return num.toString().padStart(2, '0');
+}
+
+function startTimerDisplay(taskId) {
+    let seconds = 0;
+    const display = document.querySelector(`#timer-${taskId} .timer-count`);
+    
+    // If the timer is already running, calculate the elapsed time
+    if (display.dataset.startTime) {
+        const startTime = new Date(display.dataset.startTime);
+        const now = new Date();
+        seconds = Math.floor((now - startTime) / 1000);
+    } else {
+        // Set the start time if not already set
+        display.dataset.startTime = new Date().toISOString();
+    }
+
+    activeTimers[taskId] = setInterval(() => {
+        seconds++;
+        display.textContent = formatTime(seconds);
+    }, 1000);
+}
+
+function stopTimerDisplay(taskId) {
+    if (activeTimers[taskId]) {
+        clearInterval(activeTimers[taskId]);
+        delete activeTimers[taskId];
+    }
+    const display = document.querySelector(`#timer-${taskId} .timer-count`);
+    delete display.dataset.startTime; // Clear the start time
+}
+
+// Initialize running timers
+document.addEventListener('DOMContentLoaded', function() {
+    // Get all timer buttons
+    const timerButtons = document.querySelectorAll('.timer-btn');
+    
+    // Initialize each button's state based on the task's timer_start value
+    timerButtons.forEach(button => {
+        const taskId = button.getAttribute('data-task-id');
+        const isTimerRunning = button.getAttribute('data-timer-running') === 'true';
+        if (isTimerRunning) {
+            startTimerDisplay(taskId);
+        }
+        console.log(`Initialized button for task ${taskId} with state: ${button.textContent}`);
+    });
+});
+
+// Timer toggle functionality
+document.querySelectorAll('.timer-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const taskId = this.dataset.taskId;
+        const isRunning = this.dataset.timerRunning === 'true';
+        
+        if (!isRunning) {
+            // Start timer
+            fetch(`/start_timer/${taskId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    button.textContent = 'Stop';
+                    button.dataset.timerRunning = 'true';
+                    startTimerDisplay(taskId);
+                }
+            })
+            .catch(error => {
+                console.error('Error starting timer:', error);
+            });
+        } else {
+            // Stop timer
+            fetch(`/stop_timer/${taskId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    button.textContent = 'Start';
+                    button.dataset.timerRunning = 'false';
+                    stopTimerDisplay(taskId);
+                }
+            })
+            .catch(error => {
+                console.error('Error stopping timer:', error);
+            });
+        }
+    });
+});
+
+// Time history toggle
+function toggleTimeHistory(taskId) {
+    const historyDiv = document.getElementById(`time-history-${taskId}`);
+    const button = historyDiv.previousElementSibling;
+    
+    if (historyDiv.style.display === 'none') {
+        historyDiv.style.display = 'block';
+        button.textContent = 'Hide Time History';
+    } else {
+        historyDiv.style.display = 'none';
+        button.textContent = 'Show Time History';
+    }
+}
+
+// Manual time entry modal
+function showManualTimeModal(taskId) {
+    const modal = document.getElementById('manual-time-modal');
+    const form = document.getElementById('manual-time-form');
+    modal.style.display = 'block';
+    
+    form.onsubmit = function(e) {
+        e.preventDefault();
+        const formData = new FormData(form);
+        fetch(`/add_manual_time/${taskId}`, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                const timerDisplay = document.querySelector(`#timer-${taskId} .timer-count`);
+                timerDisplay.textContent = data.formattedTimeSpent;
+                modal.style.display = 'none';
+                form.reset();
+            }
+        });
+    };
+}
+</script>
+{% endblock %} 
