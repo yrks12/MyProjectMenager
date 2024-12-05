@@ -1,0 +1,43 @@
+<div class="task-card {% if task.timer_running %}timer-running{% endif %}">
+    <div class="task-header">
+        <div class="task-title-group">
+            <h3 class="task-title">{{ task.name }}</h3>
+            <span class="task-type task-type-{{ task.type.lower() }}">
+                {{ task.type }}
+            </span>
+        </div>
+        <span class="status-badge status-{{ task.status.lower() }}">
+            <i class="fas fa-circle status-icon"></i>
+            {{ task.status }}
+        </span>
+    </div>
+
+    <div class="timer-container">
+        <div class="timer-display" id="timer-{{ task.id }}">
+            {{ task.format_tracked_time() }}
+        </div>
+        
+        <div class="timer-controls">
+            {% if not task.timer_running %}
+            <button class="timer-btn timer-btn-start" onclick="startTimer({{ task.id }})">
+                <i class="fas fa-play"></i>
+                Start
+            </button>
+            {% else %}
+            <button class="timer-btn timer-btn-stop" onclick="stopTimer({{ task.id }})">
+                <i class="fas fa-stop"></i>
+                Stop
+            </button>
+            {% endif %}
+            
+            <button class="timer-btn timer-btn-add" onclick="showAddTimeModal({{ task.id }})">
+                <i class="fas fa-plus"></i>
+                Add Time
+            </button>
+        </div>
+    </div>
+
+    <div class="total-time">
+        Total Time: {{ task.format_total_time() }}
+    </div>
+</div> 

@@ -1,0 +1,93 @@
+/* Project List Container */
+.project-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Project Item */
+.project-item {
+    background-color: #1e1e1e;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Project Header */
+.project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #333;
+}
+
+.project-name {
+    font-size: 1.4em;
+    color: #fff;
+}
+
+/* Project Details */
+.project-details {
+    margin-bottom: 20px;
+}
+
+.project-details p {
+    color: #b0bec5;
+    margin-bottom: 12px;
+}
+
+/* Progress Bar */
+.progress-bar-container {
+    background-color: #2c2c2c;
+    border-radius: 8px;
+    height: 8px;
+    margin: 12px 0;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #2196f3, #64b5f6);
+    transition: width 0.3s ease;
+    border-radius: 8px;
+}
+
+/* Task List */
+.task-list {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0;
+}
+
+.task-row {
+    background-color: #252525;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.task-row:hover {
+    background-color: #2c2c2c;
+    transform: translateX(4px);
+}
+
+/* Task Elements */
+.task-row strong {
+    color: #fff;
+    min-width: 150px;
+}
+
+.task-deadline {
+    color: #90a4ae;
+    font-size: 0.9em;
+}
+
+/* Project Actions */
+.project-actions { 

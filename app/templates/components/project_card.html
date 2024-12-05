@@ -1,0 +1,16 @@
+<div class="project-card">
+    <div class="project-header">
+        <h3 class="project-title">{{ project.name }}</h3>
+        <span class="status-badge status-{{ project.status.lower() }}">
+            <i class="fas fa-circle status-icon"></i>
+            {{ project.status }}
+        </span>
+    </div>
+    <p class="project-description">{{ project.description }}</p>
+    <div class="project-meta">
+        <div class="status-group">
+            <span class="task-count">Tasks: {{ project.tasks|length }}</span>
+            <span class="deadline">Due: {{ project.deadline|format_date }}</span>
+        </div>
+    </div>
+</div> 

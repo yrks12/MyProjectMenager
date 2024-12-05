@@ -6,41 +6,44 @@
     <title>Project Management Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/typography.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/forms.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/projects.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/project-list.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tasks.css') }}">
+    {% block head %}{% endblock %}
 </head>
 <body class="dark-theme">
     <div class="app-container">
-        <!-- Sidebar -->
+        <!-- Sidebar --> 
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="brand">
                     <i class="fas fa-tasks"></i>
                     <span>Project Manager</span>
                 </div>
-                <button id="sidebar-toggle" class="sidebar-toggle">
-                    <i class="fas fa-bars"></i>
-                </button>
+                <div class="hamburger" onclick="toggleSidebar()">☰</div>
             </div>
             
             <nav class="sidebar-nav">
                 <ul>
                     <li>
                         <a href="{{ url_for('project_routes.dashboard') }}" class="{{ 'active' if request.endpoint == 'project_routes.dashboard' }}">
-                            <i class="fas fa-chart-line"></i>
+                            <i class="fas fa-tachometer-alt sidebar-icon"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ url_for('project_routes.index') }}" class="{{ 'active' if request.endpoint == 'project_routes.index' }}">
-                            <i class="fas fa-project-diagram"></i>
+                            <i class="fas fa-folder-open sidebar-icon"></i>
                             <span>Projects</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ url_for('project_routes.create_project') }}" class="{{ 'active' if request.endpoint == 'project_routes.create_project' }}">
-                            <i class="fas fa-plus-circle"></i>
+                            <i class="fas fa-plus sidebar-icon"></i>
                             <span>New Project</span>
                         </a>
                     </li>
@@ -87,12 +90,29 @@
             {% endwith %}
 
             <div class="content-wrapper">
-                {% block content %}{% endblock %}
+                <div class="container">
+                    {% block content %}{% endblock %}
+                </div>
             </div>
         </main>
     </div>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar-nav');
+            sidebar.classList.toggle('open');
+        }
+
+        // Optional: Close sidebar when clicking outside
+        document.addEventListener('click', function(event) {
+            const sidebar = document.querySelector('.sidebar-nav');
+            const hamburger = document.querySelector('.hamburger');
+            if (!sidebar.contains(event.target) && !hamburger.contains(event.target)) {
+                sidebar.classList.remove('open');
+            }
+        });
+    </script>
     {% block extra_scripts %}{% endblock %}
 </body>
 </html>

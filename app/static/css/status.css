@@ -1,0 +1,144 @@
+/* Status Badges */
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    font-weight: 500;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Enhanced Status Colors */
+.status-pending {
+    background-color: #ffa726;  /* Vibrant Orange */
+    box-shadow: 0 2px 4px rgba(255, 167, 38, 0.2);
+}
+
+.status-active, .status-in-progress {
+    background-color: #2196f3;  /* Bright Blue */
+    box-shadow: 0 2px 4px rgba(33, 150, 243, 0.2);
+}
+
+.status-completed {
+    background-color: #66bb6a;  /* Fresh Green */
+    box-shadow: 0 2px 4px rgba(102, 187, 106, 0.2);
+}
+
+.status-on-hold {
+    background-color: #ef5350;  /* Soft Red */
+    box-shadow: 0 2px 4px rgba(239, 83, 80, 0.2);
+}
+
+/* Priority Levels with Enhanced Colors */
+.priority-high {
+    color: #f44336;  /* Bright Red */
+    font-weight: bold;
+}
+
+.priority-medium {
+    color: #fb8c00;  /* Deep Orange */
+    font-weight: 500;
+}
+
+.priority-low {
+    color: #4caf50;  /* Material Green */
+}
+
+/* Task Types with Distinct Colors */
+.task-type {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: 500;
+    color: white;
+}
+
+.task-type-development {
+    background-color: #5c6bc0;  /* Indigo */
+    box-shadow: 0 2px 4px rgba(92, 107, 192, 0.2);
+}
+
+.task-type-design {
+    background-color: #ec407a;  /* Pink */
+    box-shadow: 0 2px 4px rgba(236, 64, 122, 0.2);
+}
+
+.task-type-research {
+    background-color: #7e57c2;  /* Deep Purple */
+    box-shadow: 0 2px 4px rgba(126, 87, 194, 0.2);
+}
+
+.task-type-testing {
+    background-color: #26a69a;  /* Teal */
+    box-shadow: 0 2px 4px rgba(38, 166, 154, 0.2);
+}
+
+.task-type-documentation {
+    background-color: #8d6e63;  /* Brown */
+    box-shadow: 0 2px 4px rgba(141, 110, 99, 0.2);
+}
+
+.task-type-planning {
+    background-color: #78909c;  /* Blue Grey */
+    box-shadow: 0 2px 4px rgba(120, 144, 156, 0.2);
+}
+
+/* Enhanced Progress Bar */
+.progress-bar-container {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    height: 8px;
+    margin: 10px 0;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #2196f3, #64b5f6);
+    transition: width 0.3s ease;
+    box-shadow: 0 2px 4px rgba(33, 150, 243, 0.2);
+}
+
+/* Task Row Styling */
+.task-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.task-row:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    transform: translateX(4px);
+}
+
+/* Task Deadline */
+.task-deadline {
+    color: #90a4ae;
+    font-size: 0.85em;
+}
+
+/* Edit Link */
+.edit-task-link {
+    margin-left: auto;
+    color: #64b5f6;
+    text-decoration: none;
+    font-size: 0.9em;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.task-row:hover .edit-task-link {
+    opacity: 1;
+}
+
+.edit-task-link:hover {
+    color: #2196f3;
+    text-decoration: underline;
+} 

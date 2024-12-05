@@ -8,7 +8,7 @@
         <li class="project-item">
             <div class="project-header">
                 <strong class="project-name">{{ project.name }}</strong> 
-                <span class="project-status">({{ project.status }})</span>
+                <span class="status-badge status-{{ project.status|lower }}">{{ project.status }}</span>
             </div>
             <div class="project-details">
                 <p><strong>Deadline:</strong> {{ project.deadline }}</p>
@@ -25,12 +25,12 @@
                 <strong>Top Tasks:</strong>
                 <ul class="task-list">
                     {% for task in project.top_tasks %}
-                    <li class="task-item">
+                    <li class="task-item task-row">
                         <strong>{{ task.name }}</strong> - 
-                        <span class="task-status {{ task.status|lower }}">{{ task.status }}</span> - 
-                        <span class="task-priority {{ task.priority|lower }}">{{ task.priority }}</span> - 
+                        <span class="status-badge status-{{ task.status|lower }}">{{ task.status }}</span> - 
+                        <span class="priority-{{ task.priority|lower }}">{{ task.priority }}</span> - 
                         <span class="task-deadline">{{ task.deadline }}</span> - 
-                        <span class="task-type {{ task.task_type|lower }}">{{ task.task_type }}</span>
+                        <span class="task-type task-type-{{ task.task_type|lower }}">{{ task.task_type }}</span>
                         <a href="/edit_task/{{ task.id }}" class="edit-task-link">Edit</a>
                     </li>
                     {% endfor %}
@@ -39,16 +39,16 @@
 
             <!-- Project Actions -->
             <div class="project-actions">
-                <form action="/delete_project/1" method="POST" class="delete-form">
+                <form action="/delete_project/{{ project.id }}" method="POST" class="delete-form">
                     <button type="submit" class="delete-button btn">Delete</button>
                 </form>
-                <a href="/edit_project/1" class="edit-link btn btn-secondary">Edit</a>
-                <a href="/tasks/1" class="tasks-link btn btn-primary">View Tasks</a>
+                <a href="/edit_project/{{ project.id }}" class="edit-link btn btn-secondary">Edit</a>
+                <a href="/tasks/{{ project.id }}" class="tasks-link btn btn-primary">View Tasks</a>
             </div>
         </li>
         {% endfor %}
     </ul>
 
-    <a href="/create_project" class="create-project-button">Create New Project</a>
+    <a href="/create_project" class="create-project-button btn btn-primary">Create New Project</a>
 </div>
 {% endblock %}

@@ -1,0 +1,170 @@
+:root {
+    /* Base Colors */
+    --primary-50: #e3f2fd;
+    --primary-100: #bbdefb;
+    --primary-200: #90caf9;
+    --primary-300: #64b5f6;
+    --primary-400: #42a5f5;
+    --primary-500: #2196f3;  /* Primary Color */
+    --primary-600: #1e88e5;
+    --primary-700: #1976d2;
+    --primary-800: #1565c0;
+    --primary-900: #0d47a1;
+
+    /* Dark Theme Colors */
+    --dark-bg: #1a1a1a;
+    --dark-surface: #2d2d2d;
+    --dark-surface-2: #363636;
+    --dark-border: #404040;
+    
+    /* Text Colors */
+    --text-primary-light: #ffffff;
+    --text-secondary-light: rgba(255, 255, 255, 0.7);
+    --text-disabled-light: rgba(255, 255, 255, 0.5);
+    
+    --text-primary-dark: #333333;
+    --text-secondary-dark: #666666;
+    --text-disabled-dark: #999999;
+
+    /* Status Colors */
+    --success-light: #4caf50;
+    --success-dark: #388e3c;
+    --warning-light: #ff9800;
+    --warning-dark: #f57c00;
+    --error-light: #f44336;
+    --error-dark: #d32f2f;
+    --info-light: #2196f3;
+    --info-dark: #1976d2;
+
+    /* Priority Colors */
+    --priority-high: var(--error-light);
+    --priority-medium: var(--warning-light);
+    --priority-low: var(--success-light);
+
+    /* Status Badge Colors */
+    --status-pending: var(--warning-light);
+    --status-in-progress: var(--info-light);
+    --status-completed: var(--success-light);
+}
+
+/* Dark Theme Styles */
+[data-theme="dark"] {
+    --bg-primary: var(--dark-bg);
+    --bg-surface: var(--dark-surface);
+    --bg-surface-2: var(--dark-surface-2);
+    --border-color: var(--dark-border);
+    --text-primary: var(--text-primary-light);
+    --text-secondary: var(--text-secondary-light);
+}
+
+/* Priority Badges */
+.priority-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    color: white;
+}
+
+.priority-high {
+    background-color: var(--priority-high);
+}
+
+.priority-medium {
+    background-color: var(--priority-medium);
+}
+
+.priority-low {
+    background-color: var(--priority-low);
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    color: white;
+}
+
+.status-pending {
+    background-color: var(--status-pending);
+}
+
+.status-in-progress {
+    background-color: var(--status-in-progress);
+}
+
+.status-completed {
+    background-color: var(--status-completed);
+}
+
+/* Button Colors */
+.btn-primary {
+    background-color: var(--primary-500);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-600);
+}
+
+.btn-secondary {
+    background-color: var(--dark-surface-2);
+    color: var(--text-primary-light);
+}
+
+.btn-secondary:hover {
+    background-color: var(--dark-surface);
+}
+
+.btn-danger {
+    background-color: var(--error-light);
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: var(--error-dark);
+}
+
+/* Links */
+a {
+    color: var(--primary-300);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--primary-200);
+    text-decoration: underline;
+}
+
+/* Task Cards */
+.task-card {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+/* Form Elements */
+.form-input, .form-textarea, .form-select {
+    background-color: var(--bg-surface-2);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.form-input:focus, .form-textarea:focus, .form-select:focus {
+    border-color: var(--primary-500);
+    outline: none;
+}
+
+/* Accessibility */
+@media (prefers-contrast: high) {
+    :root {
+        --text-primary-light: #ffffff;
+        --text-secondary-light: #ffffff;
+        --primary-500: #0066cc;
+        --error-light: #cc0000;
+        --warning-light: #cc6600;
+        --success-light: #006600;
+    }
+} 
