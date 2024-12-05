@@ -1,6 +1,6 @@
 alembic==1.14.0
 click==8.1.7
-Flask==2.2.2
+Flask==2.0.1
 Flask-Migrate==4.0.7
 Flask-SQLAlchemy==2.5.1
 itsdangerous==2.2.0
@@ -10,5 +10,4 @@ MarkupSafe==3.0.2
 python-dotenv==1.0.1
 SQLAlchemy==2.0.36
 typing_extensions==4.12.2
-Werkzeug==2.2.2
-gunicorn
+Werkzeug==3.1.3

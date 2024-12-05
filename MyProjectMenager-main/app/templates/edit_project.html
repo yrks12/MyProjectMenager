@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="edit-project-container">
+    <h2 class="page-title">Edit Project</h2>
+    <form method="POST" class="form">
+        <!-- Name -->
+        <div class="form-group">
+            <label for="name" class="form-label">Project Name:</label>
+            <input type="text" id="name" name="name" class="form-input" value="{{ project.name }}" required placeholder="Enter project name">
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+            <label for="description" class="form-label">Description:</label>
+            <textarea id="description" name="description" class="form-textarea" placeholder="Provide a brief description">{{ project.description }}</textarea>
+        </div>
+
+        <!-- Deadline -->
+        <div class="form-group">
+            <label for="deadline" class="form-label">Deadline:</label>
+            <input type="date" id="deadline" name="deadline" class="form-input" value="{{ project.deadline }}">
+        </div>
+
+        <!-- Status -->
+        <div class="form-group">
+            <label for="status" class="form-label">Status:</label>
+            <select id="status" name="status" class="form-select">
+                <option value="Active" {% if project.status == 'Active' %}selected{% endif %}>Active</option>
+                <option value="Completed" {% if project.status == 'Completed' %}selected{% endif %}>Completed</option>
+                <option value="Pending" {% if project.status == 'Pending' %}selected{% endif %}>Pending</option>
+            </select>
+        </div>
+
+        <!-- AI Notes -->
+        <div class="form-group">
+            <label for="ai_notes" class="form-label">AI Notes:</label>
+            <textarea id="ai_notes" name="ai_notes" class="form-textarea" placeholder="Include AI-generated insights">{{ project.ai_notes }}</textarea>
+        </div>
+
+        <!-- Tags -->
+        <div class="form-group">
+            <label for="tags" class="form-label">Tags (comma separated):</label>
+            <input type="text" id="tags" name="tags" class="form-input" value="{{ project.tags }}" placeholder="E.g., AI, Web, Python">
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Update Project</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

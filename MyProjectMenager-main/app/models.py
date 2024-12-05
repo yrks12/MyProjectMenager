@@ -35,9 +35,6 @@ class Task(db.Model):
     priority = db.Column(db.String(20), default='Low')
     task_type = db.Column(db.String(50))
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
-    time_spent = db.Column(db.Integer, default=0)  # Store time in seconds
-    timer_start = db.Column(db.DateTime, nullable=True)  # Store timer start time
-    time_entries = db.relationship('TimeEntry', backref='task', lazy='dynamic', cascade='all, delete-orphan')
 
     # Define the many-to-many relationship with itself
     dependencies = db.relationship(
@@ -48,13 +45,3 @@ class Task(db.Model):
         backref=db.backref('dependent_tasks', lazy='dynamic'),
         lazy='dynamic'
     )
-
-class TimeEntry(db.Model):
-    __tablename__ = 'time_entry'
-    id = db.Column(db.Integer, primary_key=True)
-    task_id = db.Column(db.Integer, db.ForeignKey('task.id'), nullable=False)
-    start_time = db.Column(db.DateTime, nullable=False)
-    end_time = db.Column(db.DateTime, nullable=True)
-    duration = db.Column(db.Integer)  # Duration in seconds
-    manual_entry = db.Column(db.Boolean, default=False)
-    notes = db.Column(db.Text)

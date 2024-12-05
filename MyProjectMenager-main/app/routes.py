@@ -1,11 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for, Blueprint, flash, session, jsonify
-from app.models import Project, Task, task_dependencies, TimeEntry
+from flask import Flask, render_template, request, redirect, url_for, Blueprint, flash, session
+from app.models import Project, Task, task_dependencies
 from app import db
-from datetime import datetime, timedelta
+from datetime import datetime
 from functools import wraps
 import os
-import logging
-from app import app
 
 project_routes = Blueprint('project_routes', __name__)
 
@@ -211,72 +209,6 @@ def delete_task(task_id):
     db.session.commit()
     flash('Task deleted successfully!', 'success')
     return redirect(url_for('task_routes.tasks', project_id=task.project_id))
-
-@task_routes.route('/start_timer/<int:task_id>', methods=['POST'])
-@login_required
-def start_timer(task_id):
-    task = Task.query.get_or_404(task_id)
-    if not task.timer_start:
-        task.timer_start = datetime.utcnow()
-        time_entry = TimeEntry(
-            task_id=task_id,
-            start_time=task.timer_start
-        )
-        db.session.add(time_entry)
-        db.session.commit()
-        app.logger.info(f'Timer started for task {task_id} at {task.timer_start}')
-        return jsonify({'status': 'success', 'message': 'Timer started'})
-    app.logger.warning(f'Timer already running for task {task_id}')
-    return jsonify({'status': 'error', 'message': 'Timer already running'})
-
-@task_routes.route('/stop_timer/<int:task_id>', methods=['POST'])
-@login_required
-def stop_timer(task_id):
-    task = Task.query.get_or_404(task_id)
-    app.logger.debug(f'Attempting to stop timer for task {task_id}. Current timer_start: {task.timer_start}')
-    if task.timer_start:
-        end_time = datetime.utcnow()
-        time_entry = TimeEntry.query.filter_by(
-            task_id=task_id, 
-            end_time=None
-        ).first()
-        
-        if time_entry:
-            time_entry.end_time = end_time
-            duration = int((end_time - time_entry.start_time).total_seconds())
-            time_entry.duration = duration
-            task.time_spent += duration
-            app.logger.info(f'Timer stopped for task {task_id}. Duration: {duration} seconds')
-
-        task.timer_start = None
-        db.session.commit()
-        return jsonify({'status': 'success', 'message': 'Timer stopped'})
-    app.logger.warning(f'No timer running for task {task_id}. Current timer_start: {task.timer_start}')
-    return jsonify({'status': 'error', 'message': 'No timer running'})
-
-@task_routes.route('/add_manual_time/<int:task_id>', methods=['POST'])
-@login_required
-def add_manual_time(task_id):
-    task = Task.query.get_or_404(task_id)
-    hours = int(request.form.get('hours', 0))
-    minutes = int(request.form.get('minutes', 0))
-    notes = request.form.get('notes', '')
-    
-    duration = (hours * 3600) + (minutes * 60)
-    if duration > 0:
-        time_entry = TimeEntry(
-            task_id=task_id,
-            start_time=datetime.utcnow(),
-            end_time=datetime.utcnow(),
-            duration=duration,
-            manual_entry=True,
-            notes=notes
-        )
-        task.time_spent += duration
-        db.session.add(time_entry)
-        db.session.commit()
-        return jsonify({'status': 'success', 'message': 'Time added successfully'})
-    return jsonify({'status': 'error', 'message': 'Invalid time entry'})
 
 # Use the decorator on routes that require login
 @project_routes.route('/some_protected_route')

@@ -1,0 +1,13 @@
+[Unit]
+Description=Gunicorn instance to serve Flask app MPM
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/root/projects/MyProjectMenager-main
+Environment="PATH=/root/projects/MyProjectMenager-main/env"
+ExecStart=/root/projects/MyProjectMenager-main/env/bin/gunicorn --workers 3 --bind unix:/root/projects/MyProjectMenager-main/flask_app.sock -m 007 app:app
+
+[Install]
+WantedBy=multi-user.target
